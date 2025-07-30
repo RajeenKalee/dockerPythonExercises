@@ -14,14 +14,15 @@ services:
     restart: always
 
   sakilaDB:
-    image: mysql:8.0
+    image: rajeenkalee/sakila-db:latest
     container_name: sakila_db
     environment:
       - MYSQL_ROOT_PASSWORD=rootpassword
       - MYSQL_DATABASE=sakila
+    ports:
+      - "3306:3306"
     volumes:
       - sakila_data:/var/lib/mysql
-      - ./mysql:/docker-entrypoint-initdb.d
     restart: always
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
