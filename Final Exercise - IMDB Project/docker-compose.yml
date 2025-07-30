@@ -1,0 +1,33 @@
+services:
+  api:
+    build: .
+    container_name: flask_api
+    ports:
+      - "5000:5000"
+    environment:
+      - ENV=DEV
+      - FLASK_ENV=production
+      - PYTHONPATH=/app
+    depends_on:
+      sakilaDB:
+        condition: service_healthy
+    restart: always
+
+  sakilaDB:
+    image: mysql:8.0
+    container_name: sakila_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=sakila
+    volumes:
+      - sakila_data:/var/lib/mysql
+      - ./mysql:/docker-entrypoint-initdb.d
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
+      start_period: 20s
+
+volumes:
+  sakila_data:
